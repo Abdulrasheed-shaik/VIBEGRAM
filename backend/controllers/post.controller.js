@@ -324,7 +324,7 @@ export const deletePost = async (req,res)=>{
 
         //delete post
         await Post.findByIdAndDelete(postId);
-        // remove the pst from user's post
+        // remove the post from user's post
         let user = await User.findById(authorId)
         user.posts = user.posts.filter(id => id.toString() !== postId)
         await user.save()
@@ -337,8 +337,11 @@ export const deletePost = async (req,res)=>{
             success:true
         })
     } catch (error) {
-        console.log(error);
-        
+        console.error('Error deleting post:', error);
+        return res.status(500).json({
+            message: 'Internal server error',
+            success: false
+        })
     }
 }
 export const bookmarkPost = async (req,res)=>{

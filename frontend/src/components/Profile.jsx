@@ -128,9 +128,6 @@ const Profile = () => {
               <div className='flex flex-col gap-3'>
                 <span className='font-semibold'>{userProfile?.bio || 'bio here...'}</span>
                 <Badge className='w-fit' variant='secondary'><AtSign className='w-5'/> <span className='pl-1'>{userProfile?.username}</span></Badge>
-                <span>👨‍💻 Learn code with Rasheed</span>  
-                <span>💡 Turning code into fun</span>  
-                <span>🤝 Dm for collaboration</span>
               </div>
             </div>
           </section>

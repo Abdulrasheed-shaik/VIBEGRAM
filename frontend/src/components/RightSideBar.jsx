@@ -8,7 +8,7 @@ import SuggestedUsers from './SuggestedUsers'
 const RightSideBar = () => {
   const {user} = useSelector(store => store.auth)
   return (
-    <div className='w-fit my-10 pr-32'>
+    <div className='w-fit my-10 pr-32 fixed right-0'>
       <div className='flex items-center gap-2'>
         <Link to={`/profile/${user?._id}`}>
           <Avatar className='w-8 h-8'>

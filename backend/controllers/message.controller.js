@@ -7,6 +7,7 @@ export const sendMessage = async (req, res)=>{
        const senderId = req.id
        const receiverId = req.params.id
        const {textMessage:message} = req.body
+
        let conversation =await Conversation.findOne({
         participants:{$all:[senderId,receiverId]}
        })
@@ -29,6 +30,12 @@ export const sendMessage = async (req, res)=>{
         const receiverSocketId = getReceiverSocketId(receiverId)
         if(receiverSocketId){
             io.to(receiverSocketId).emit('newMessage',newMessage)
+            io.to(receiverSocketId).emit('messageNotification', {
+                type: 'message',
+                senderId: senderId,
+                text: message,
+                userDetails: req.user // Assume `req.user` contains sender details
+            });
         }
         return res.status(201).json({
             success:true,
@@ -46,6 +53,7 @@ export const getMessage = async (req,res)=>{
         const conversation = await Conversation.findOne({
             participants:{$all:[senderId, receiverId]}
         }).populate('messages')
+        
         if(!conversation){
             return res.status(200).json({
                 success:true,

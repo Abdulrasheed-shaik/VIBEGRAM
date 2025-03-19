@@ -1,0 +1,6 @@
+/* src/index.css or App.css */
+@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap');
+
+svg text {
+  font-family: 'Great Vibes', 'Caveat', cursive !important;
+}

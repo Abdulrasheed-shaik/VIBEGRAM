@@ -14,7 +14,7 @@ export const register = async (req,res) =>{
             })
         }
         const user = await User.findOne({email})
-        if(!User){
+        if(!user){
             return res.status(401).json({
                 message:"Try different email id.",
                 success:false
@@ -44,7 +44,7 @@ try {
         })
     }
     let user = await User.findOne({email})
-    if(!User){
+    if(!user){
         return res.status(401).json({
             message:"Incorrect email or password",
             success:false
@@ -186,7 +186,7 @@ export const followOrUnfollow = async (req,res) =>{
                 User.updateOne({_id:followkarunga},{$pull:{followers:followkarnewala}}),
             ])
             return res.status(200).json({
-                message:'Unfollowed succeassfully',
+                message:'Unfollowed successfully',
                 success:true
             })
         }
@@ -197,7 +197,7 @@ export const followOrUnfollow = async (req,res) =>{
                 User.updateOne({_id:followkarunga},{$push:{followers:followkarnewala}}),
             ])
             return res.status(200).json({
-                message:'Followed succeassfully',
+                message:'Followed successfully',
                 success:true
             })
         }
@@ -205,3 +205,31 @@ export const followOrUnfollow = async (req,res) =>{
         console.log(error)
     }
 }
+export const searchUsers = async (req, res) => {
+    try {
+        const { query } = req.query; // Get search query
+
+        if (!query) {
+            return res.status(400).json({
+                success: false,
+                message: "Search query is required",
+            });
+        }
+
+        // Find users by username (case-insensitive)
+        const users = await User.find({
+            username: { $regex: query, $options: "i" } // "i" makes it case-insensitive
+        }).select("-password"); // Exclude password from results
+
+        return res.status(200).json({
+            success: true,
+            users,
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+        });
+    }
+};

@@ -11,6 +11,7 @@ import { toast } from 'sonner'
 import axios from 'axios'
 import { setPosts, setSelectedPost } from '@/redux/postSlice.js'
 import { Badge } from './ui/badge'
+import { Link } from 'react-router-dom'
 
 
 const Post = ({post}) => {
@@ -86,9 +87,8 @@ const Post = ({post}) => {
       <div className='relative'>
         <video
           ref={videoRef}
-          className='rounded-sm my-2 h-[500px]  w-full  object-cover cursor-pointer'
+          className='rounded-sm my-2 aspect-video object-cover cursor-pointer' // Increased width
           src={media.url}
-          style={{ aspectRatio: '16 / 9' }}
           muted={isMuted}
           preload="auto"  // Preload the video for faster loading
           onClick={handleMuteClick}
@@ -108,16 +108,20 @@ const Post = ({post}) => {
 }
 
 const deletePostHandler = async () =>{
+  if (!post?._id) {
+    console.log("Post ID is missing.");
+    return;
+  }
   try {
     const res = await axios.delete(`http://localhost:8000/api/v1/post/delete/${post?._id}`,{withCredentials:true})
-    if(res.data.success){
+    if(res?.data?.success){
       const updatedPostData = posts.filter((postItem) => postItem?._id !== post?._id)
       dispatch(setPosts(updatedPostData))
       toast.success(res.data.message)
     }
   } catch (error) {
     console.log(error);
-    toast.error(error.response.data.message)
+    toast.error(error.response.data.message || 'something went wrong')
     
   }
 }
@@ -184,15 +188,17 @@ const bookmarkHandler = async () =>{
 
 
   return (
-    <div className='my-8 w-full max-w-sm mx-auto'>
-      <div className='flex items-center justify-between'>
+    <div className='my-8 w-full max-w-md -mx-[10%]'>
+      <div className='flex items-center justify-between '>
         <div className='flex items-center gap-2'>
+        <Link to={`/profile/${user?._id}`}>
           <Avatar className='w-6 h-6'>
             <AvatarImage src={post.author?.profilePicture} />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
+        </Link>
           <div className='flex gap-3 items-center'>
-          <h1>{post.author?.username}</h1>
+          <Link to={`/profile/${user?._id}`}>{user?.username}</Link>
           {user?._id === post.author._id && <Badge variant='secondary'>Author</Badge> }
           </div>
         </div>
